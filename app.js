@@ -5,9 +5,18 @@ import cors from 'cors';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import morgan from 'morgan';
+import path from 'path';
+import { fileURLToPath } from "url";
 import { config } from './config/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import routes from './routes/index.js';
+
+
+// Get directory name in ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 
 const app = express();
 
@@ -32,6 +41,9 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Application routes
 app.use('/api', routes);
 
@@ -39,6 +51,8 @@ app.use('/api', routes);
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
+
+console.log("xxxxx123")
 
 // 404 handler
 app.use((req, res, next) => {
