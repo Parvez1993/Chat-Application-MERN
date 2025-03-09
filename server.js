@@ -10,25 +10,47 @@ const serverNew = createServer(app);
 // Initialize Socket.IO with correct import
 const io = new Server(serverNew); // Change this line
 
-let counter=0;
+// let counter=0;
+
+// io.on("connection", (socket) => {
+//   socket.emit('countUpdated',counter);
+//
+//   socket.on('increment', () => {
+//       console.log("incrementing");
+//       counter++;
+//     socket.emit('countUpdated',counter);
+//   })
+//   socket.on('decrement', () => {
+//     console.log("decrementing");
+//     counter--;
+//     socket.emit('countUpdated',counter);
+//   })
+//
+//   socket.on("disconnect", () => {
+//     console.log("Connection disconnected");
+//   })
+// });
+
 
 io.on("connection", (socket) => {
-  socket.emit('countUpdated',counter);
 
-  socket.on('increment', () => {
-      console.log("incrementing");
-      counter++;
-    socket.emit('countUpdated',counter);
-  })
-  socket.on('decrement', () => {
-    console.log("decrementing");
-    counter--;
-    socket.emit('countUpdated',counter);
-  })
+  socket.emit("message","Welcome")
+
+  //boardcast to everyone except it self
+  socket.broadcast.emit("message","A new user has joined ")
+
+
+  // Listen for messages from client
+  socket.on("newMessage", (message) => {
+    io.emit("message", message);
+  });
+
 
   socket.on("disconnect", () => {
-    console.log("Connection disconnected");
+    console.log("disconnected");
   })
+
+
 });
 
 
