@@ -1,66 +1,60 @@
-// File: server.js
 import app from "./app.js";
 import { config } from "./config/index.js";
 import { createServer } from "http";
-import { Server } from "socket.io"; // Change this line
+import { Server } from "socket.io";
 
 const PORT = config.port || 3000;
-const serverNew = createServer(app);
+const server = createServer(app);
 
-// Initialize Socket.IO with correct import
-const io = new Server(serverNew); // Change this line
-
-// let counter=0;
-
-// io.on("connection", (socket) => {
-//   socket.emit('countUpdated',counter);
-//
-//   socket.on('increment', () => {
-//       console.log("incrementing");
-//       counter++;
-//     socket.emit('countUpdated',counter);
-//   })
-//   socket.on('decrement', () => {
-//     console.log("decrementing");
-//     counter--;
-//     socket.emit('countUpdated',counter);
-//   })
-//
-//   socket.on("disconnect", () => {
-//     console.log("Connection disconnected");
-//   })
-// });
-
-
-io.on("connection", (socket) => {
-
-  socket.emit("message","Welcome")
-
-  //boardcast to everyone except it self
-  socket.broadcast.emit("message","A new user has joined ")
-
-
-  // Listen for messages from client
-  socket.on("newMessage", (message) => {
-    io.emit("message", message);
-  });
-
-
-  socket.on("disconnect", () => {
-    console.log("disconnected");
-  })
-
-
+// Initialize Socket.IO
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Allow all origins (adjust as needed)
+    methods: ["GET", "POST"]
+  }
 });
 
+io.on("connection", (socket) => {
+  console.log("A new user connected:", socket.id);
 
-const server = serverNew.listen(PORT, () => {
+  // Send welcome message to the connected user
+  socket.emit("message", "Welcome to the chat!");
+
+  // Broadcast to others (excluding the sender)
+  socket.broadcast.emit("message", `User ${socket.id} has joined`);
+
+  // Listen for messages from client and broadcast to all users
+  socket.on("newMessage", (message) => {
+    console.log(`Received message from ${socket.id}:`, message);
+    io.emit("message", message); // Broadcast to everyone
+  });
+
+  // Handle location sharing
+  socket.on("shareLocation", (coords) => {
+    io.emit("locationMessage", {
+      url: `https://www.google.com/maps?q=${coords.latitude},${coords.longitude}`,
+      userId: socket.id
+    });
+  });
+
+  // Handle user disconnect
+  socket.on("disconnect", () => {
+    console.log(`User ${socket.id} disconnected`);
+    io.emit("message", `User ${socket.id} has left`);
+  });
+});
+
+// Start server
+server.listen(PORT, () => {
   console.log(`Server running in ${config.nodeEnv} mode on port ${PORT}`);
 });
 
-// Graceful shutdown
+// Graceful shutdown handling
 process.on("SIGTERM", () => {
   console.log("SIGTERM signal received: closing HTTP server");
+  io.close(() => {
+    console.log("Socket.IO server closed");
+  });
   server.close(() => {
     console.log("HTTP server closed");
     process.exit(0);

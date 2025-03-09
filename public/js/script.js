@@ -1,24 +1,20 @@
 const socket = io()
 
 
+// Handle incoming text messages
 socket.on("message", (message) => {
-   console.log("new message", message);
-});
+    console.log("New message:", message);
 
-// // Update the counter when received from the server
-// socket.on("countUpdated", (count) => {
-//     document.getElementById("counter").textContent = count;
-// });
-//
-// // Send an "increment" event when the button is clicked
-// document.getElementById("increment-btn").addEventListener("click", () => {
-//     socket.emit("increment");
-// });
-//
-//
-// document.getElementById("decrement-btn").addEventListener("click", () => {
-//     socket.emit("decrement");
-// });
+    const messagesContainer = document.getElementById("messages");
+    if (!messagesContainer) {
+        console.error("Missing #messages container in HTML");
+        return;
+    }
+
+    const messageElement = document.createElement("div");
+    messageElement.textContent = message;
+    messagesContainer.appendChild(messageElement);
+});
 
 // Handle location messages
 socket.on("locationMessage", (locationData) => {
