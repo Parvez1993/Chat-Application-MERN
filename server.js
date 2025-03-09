@@ -10,12 +10,27 @@ const serverNew = createServer(app);
 // Initialize Socket.IO with correct import
 const io = new Server(serverNew); // Change this line
 
+let counter=0;
+
 io.on("connection", (socket) => {
-  socket.on("message", (msg) => {
-    console.log(msg);
-  });
+  socket.emit('countUpdated',counter);
+
+  socket.on('increment', () => {
+      console.log("incrementing");
+      counter++;
+    socket.emit('countUpdated',counter);
+  })
+  socket.on('decrement', () => {
+    console.log("decrementing");
+    counter--;
+    socket.emit('countUpdated',counter);
+  })
+
+  socket.on("disconnect", () => {
+    console.log("Connection disconnected");
+  })
 });
-console.log("xxxxxxxxx");
+
 
 const server = serverNew.listen(PORT, () => {
   console.log(`Server running in ${config.nodeEnv} mode on port ${PORT}`);

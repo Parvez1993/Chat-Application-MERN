@@ -1,54 +1,43 @@
-<!-- File: public/socket-test.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Socket.IO Test</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        #messages {
-            height: 300px;
-            border: 1px solid #ddd;
-            margin-bottom: 20px;
-            padding: 10px;
-            overflow-y: auto;
-        }
-        #message-form {
-            display: flex;
-        }
-        #message-input {
-            flex: 1;
-            padding: 8px;
-            margin-right: 10px;
-        }
-        button {
-            padding: 8px 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .status {
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-        .connected {
-            color: green;
-        }
-        .disconnected {
-            color: red;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.IO Counter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+    #counter {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-<h1>Socket.IO Test Page</h1>
-<!-- Socket.IO is automatically served at this path -->
+<h1>Socket.IO Counter</h1>
+<p>Current Count: <span id="counter">0</span></p>
+<button id="increment-btn">Increment</button>
+<button id="decrement-btn">Decrement</button>
+
 <script src="/socket.io/socket.io.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>
