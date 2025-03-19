@@ -23,9 +23,11 @@ coverage
 .nyc_output
 .grunt
 .bower_components
+build
 
 # Dependencies
 node_modules/
+*/node_modules/
 jspm_packages/
 web_modules/
 
@@ -65,6 +67,11 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
 
 # Parcel cache
 .cache
@@ -107,11 +114,10 @@ dist
 # VSCode testing
 .vscode-test
 
+# macOS
+.DS_Store
 
-# Ignore all .env files globally
-**/.env
-**/.env.local
-**/.env.development.local
-**/.env.test.local
-**/.env.production.local
-.env
+# React specific
+/client/build
+/client/dist
+/client/.env
