@@ -32,3 +32,15 @@ const removeUser = (id) => {
   users = users.filter((user) => user.id !== id);
   return user;
 };
+
+const getUser = (id) => users.find((user) => user.id === id);
+
+const getUsersInRoom = (room) => users.filter((user) => user.room === room);
+
+addUser({ id: 1, username: "Alice", room: "south" });
+addUser({ id: 2, username: "Bob", room: "south" });
+
+console.log(users);
+
+console.log(getUser(1));
+console.log(getUsersInRoom("south"));
