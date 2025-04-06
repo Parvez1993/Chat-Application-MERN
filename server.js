@@ -14,6 +14,8 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+// Store user data
+const users = {};
 
 io.on("connection", (socket) => {
   console.log("A new user connected:", socket.id);
@@ -44,7 +46,18 @@ io.on("connection", (socket) => {
   // Listen for messages from client and broadcast to all users
   socket.on("newMessage", (message) => {
     console.log(`Received message from ${socket.id}:`, message);
-    io.to("south").emit("message", generateMessage(message)); // Broadcast to everyone
+    // CHANGE THIS LINE:
+    // FROM: io.to("south").emit("message", generateMessage(message));
+    // TO:
+    const userRooms = [...socket.rooms];
+    // The first room in userRooms is the socket ID, the second one (if exists) is the joined room
+    const roomName = userRooms.length > 1 ? userRooms[1] : null;
+    if (roomName) {
+      io.to(roomName).emit("message", generateMessage(message));
+    } else {
+      // Fallback if no room is found (shouldn't happen in normal flow)
+      socket.emit("message", generateMessage(message));
+    }
   });
 
   // Handle location sharing
